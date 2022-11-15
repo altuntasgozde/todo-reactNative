@@ -1,30 +1,27 @@
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function App() {
-  const [text, setText] = useState({
-    textvalue: "",
-    id: "",
-  });
+  const [inputvalue, setInputValue] = useState("");
+
   const [todos, setTodos] = useState([]);
 
-
-
-  const AddTodo = () => {
+  const AddTodo = (inputvalue) => {
     setTodos((prevTodos) => {
-      return [text, ...prevTodos];
+      return [
+        {
+          textvalue: inputvalue,
+          id: Math.random(),
+        },
+        ...prevTodos,
+      ];
     });
   };
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id))
-    
   }
-
-  useEffect(() => {
-    console.log(todos)
-  })
 
   return (
     <View style={styles.container}>
@@ -32,15 +29,10 @@ export default function App() {
       <View style={styles.wrapper}>
         <TextInput
           style={styles.input}
-          onChangeText={(newText) =>
-            setText({
-              textvalue: newText,
-              id:Math.floor(Math.random() * 10000) + 1,
-            })
-          }
-          defaultValue={text.textvalue}
+          onChangeText={(val) => setInputValue(val)}
+          // defaultValue={text.textvalue}
         />
-        <Pressable style={styles.button} onPress={AddTodo}>
+        <Pressable style={styles.button} onPress={() => AddTodo(inputvalue)}>
           <Text style={styles.text}>Add</Text>
         </Pressable>
       </View>
@@ -49,7 +41,10 @@ export default function App() {
         {todos.map((todo) => (
           <View key={todo.id} style={styles.todoWrapper}>
             <Text>{todo.textvalue}</Text>
-            <Pressable style={styles.todoButton} onPress={deleteTodo(todo.id)}>
+            <Pressable
+              style={styles.todoButton}
+              onPress={() => deleteTodo(todo.id)}
+            >
               <Text style={styles.text}>Delete</Text>
             </Pressable>
           </View>
